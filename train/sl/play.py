@@ -1,6 +1,6 @@
-from numpy import ndarray
 import torch
 from model import CNN2048
+from numpy import ndarray
 from board import Board
 from glob import glob
 from torch.distributions import Categorical
@@ -24,7 +24,7 @@ model_path = models[model_number]
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = CNN2048().to(device)
-n_games = 100
+n_games = 1000
 if model_path is not None:
     model.load_state_dict(torch.load(model_path))
     print('Model loaded from', model_path)
@@ -56,11 +56,19 @@ def play_game(verbose):
             print(board)
         if len(board.valid_acts()) == 0:
             break
-    return board.score
+    return board
 
 score_total = 0
+max_score = -1
+max_max_tile = 0
 for i in range(n_games):
-    score = play_game(verbose=False)
+    board = play_game(verbose=False)
+    score = board.score
+    max_tile = 1 << board.max()
     score_total += score
-    print(f'==== Game {i} Score: {score} ======\n')
-print('===== Average Score:', score_total/n_games)
+    if score > max_score:
+        max_score = score
+    if max_tile > max_max_tile:
+        max_max_tile = max_tile
+    print(f'==== Game {i} Score: {score}, Max Tile: {max_tile} ======\n')
+print(f'===== Average Score: {score_total/n_games}, Highest Score Reached: {max_score}, Highest Tile Reached: {max_max_tile} ======')
