@@ -1,1 +1,10 @@
 .sass-cache/
+
+node_modules/
+
+dist/
+
+internal-wasm/pkg/
+internal-wasm/target
+
+.*
