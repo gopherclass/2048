@@ -3,8 +3,9 @@ const path = require('path');
 
 module.exports = {
   mode: "development",
+  devtool: "eval-source-map",
   entry: {
-    bootstrap: "./bootstrap.js",
+    bootstrap: "./bootstrap.ts",
   },
   output: {
     filename: "[name].[chunkhash].js",
@@ -40,6 +41,9 @@ module.exports = {
         use: "ts-loader",
       },
     ],
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
   },
   experiments: {
     asyncWebAssembly: true
