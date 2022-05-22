@@ -77,10 +77,10 @@ fn display(x: State) {
 #[derive(Clone, Copy, Debug)]
 #[repr(u8)]
 enum Dir {
-    L = 0,
+    U = 0,
     R = 1,
     D = 2,
-    U = 3,
+    L = 3,
 }
 
 type State = [u32; 16];

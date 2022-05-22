@@ -14,16 +14,8 @@ window.requestAnimationFrame(function () {
   document.getElementById("run").addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const r = wasm.walk(game.grid.typedArray(), source);
-    if (r == 0) {
-      game.move(3);
-    } else if (r == 1) {
-      game.move(1);
-    } else if (r == 2) {
-      game.move(2);
-    } else if (r == 3) {
-      game.move(0);
-    }
+    const dir = wasm.walk(game.grid.typedArray(), source);
+    game.move(dir);
   });
 });
 
