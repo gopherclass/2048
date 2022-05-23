@@ -10,7 +10,6 @@ import LocalStorageManager from "./local_storage_manager.js";
 
 function encodeToTensor(state) {
   const input = new Float32Array(16 * 4 * 4);
-  console.log(state);
   for (let j = 0; j < 16; j++) {
     input[j] = state[j] == 0 ? 1 : 0;
   }
@@ -55,15 +54,12 @@ window.requestAnimationFrame(async () => {
     const outputMap = await sess.run([encodeToTensor(game.grid.typedArray())]);
     const outputTensor = outputMap.values().next().value;
     const predictions = outputTensor.data;
-    console.log(predictions);
     for (let i = 0; i < 4; i++) {
       if (!game.moveAvailable(i)) {
         predictions[i] = Number.NEGATIVE_INFINITY;
       }
     }
     const dir = argmax(predictions);
-    console.log(predictions);
-    console.log("dir", dir);
     game.move(dir);
   });
 });
