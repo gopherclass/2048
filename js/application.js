@@ -39,18 +39,12 @@ function argmax(array) {
 window.requestAnimationFrame(async () => {
   const game = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
   const source = new wasm.PCGSource(1n, 0n);
-  document.getElementById("run-mc").addEventListener("click", (event) => {
-    event.preventDefault();
+
+  const runMC = () => {
     const dir = wasm.walk(game.grid.typedArray(), source);
     game.move(dir);
-  });
-
-  const sess = new onnx.InferenceSession();
-  await sess.loadModel("./model.onnx");
-
-  document.getElementById("run-cnn").addEventListener("click", async (event) => {
-    event.preventDefault();
-
+  };
+  const runCNN = async () => {
     const outputMap = await sess.run([encodeToTensor(game.grid.typedArray())]);
     const outputTensor = outputMap.values().next().value;
     const predictions = outputTensor.data;
@@ -61,6 +55,50 @@ window.requestAnimationFrame(async () => {
     }
     const dir = argmax(predictions);
     game.move(dir);
+  };
+
+  let currentAlgorithm = undefined;
+  const runAlg = async () => {
+    if (currentAlgorithm !== undefined) {
+      await currentAlgorithm();
+      setTimeout(window.requestAnimationFrame, 100, runAlg);
+    }
+  };
+
+  document.getElementById("run-mc").addEventListener("click", (event) => {
+    event.preventDefault();
+    if (currentAlgorithm === undefined) {
+      runMC();
+    }
+  });
+
+  document.getElementById("run-mc").addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    if (currentAlgorithm === undefined) {
+      currentAlgorithm = runMC;
+      window.requestAnimationFrame(runAlg);
+    } else {
+      currentAlgorithm = undefined;
+    }
+  });
+
+  const sess = new onnx.InferenceSession();
+  await sess.loadModel("./model.onnx");
+
+  document.getElementById("run-cnn").addEventListener("click", (event) => {
+    event.preventDefault();
+    if (currentAlgorithm === undefined) {
+      runCNN();
+    }
+  });
+  document.getElementById("run-cnn").addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+    if (currentAlgorithm === undefined) {
+      currentAlgorithm = runCNN;
+      window.requestAnimationFrame(runAlg);
+    } else {
+      currentAlgorithm = undefined;
+    }
   });
 });
 
