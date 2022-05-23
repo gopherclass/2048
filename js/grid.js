@@ -1,4 +1,6 @@
-function Grid(size, previousState) {
+import Tile from "./tile.js";
+
+export default function Grid(size, previousState) {
   this.size = size;
   this.cells = previousState ? this.fromState(previousState) : this.empty();
 }
@@ -30,6 +32,28 @@ Grid.prototype.fromState = function (state) {
     }
   }
 
+  return cells;
+};
+
+Grid.prototype.typedArray = function () {
+  const array = new Uint32Array(this.size * this.size);
+  for (let y = 0; y < this.size; y++) {
+    for (let x = 0; x < this.size; x++) {
+      array[y * this.size + x] = this.cells[x][y]?.value ?? 0;
+    }
+  }
+  return array;
+};
+
+Grid.prototype.fromTypeArray = function (state) {
+  const cells = [];
+  for (let x = 0; x < this.size; x++) {
+    const row = cells[x] = [];
+    for (let y = 0; y < this.size; y++) {
+      const value = state[y * this.size + x];
+      row.push(value > 0 ? new Tile({x, y}, value) : null);
+    }
+  }
   return cells;
 };
 

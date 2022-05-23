@@ -1,4 +1,7 @@
-function GameManager(size, InputManager, Actuator, StorageManager) {
+import Tile from "./tile.js";
+import Grid from "./grid.js";
+
+export default function GameManager(size, InputManager, Actuator, StorageManager) {
   this.size           = size; // Size of the grid
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
@@ -267,6 +270,28 @@ GameManager.prototype.tileMatchesAvailable = function () {
   return false;
 };
 
+GameManager.prototype.moveAvailable = function (direction) {
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      const tile = this.grid.cellContent({ x: x, y: y });
+      if (tile) {
+        const vector = this.getVector(direction);
+        const cell   = { x: x + vector.x, y: y + vector.y };
+
+        if (0 <= cell.x && cell.x < this.size && 0 <= cell.y && cell.y < this.size) {
+          const other  = this.grid.cellContent(cell);
+          if (!other || other.value === tile.value) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
 GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };
+

@@ -26,7 +26,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = CNN2048().to(device)
 n_games = 1000
 if model_path is not None:
-    model.load_state_dict(torch.load(model_path))
+    model.load_state_dict(torch.load(model_path, map_location=device))
     print('Model loaded from', model_path)
 else:
     exit()
