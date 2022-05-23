@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require('path');
 
 module.exports = {
@@ -17,6 +18,9 @@ module.exports = {
       directory: path.resolve(__dirname),
       // serveIndex: true
     },
+  },
+  externals: {
+    onnx: 'onnx',
   },
   module: {
     rules: [
@@ -55,6 +59,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "index.html"),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'train/sl/model/onnx_model3.pth', to: 'model.onnx' },
+      ],
     }),
   ]
 };
