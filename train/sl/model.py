@@ -23,7 +23,7 @@ class CNN2048(nn.Module):
         x = torch.relu(self.conv4(x))
         x = F.pad(x, (0,1,0,1))
         x = torch.relu(self.conv5(x)) # size(x)=(N, C, 4, 4)
-        x = x.view(x.size(0), -1)
+        x = x.flatten(start_dim=1)
         x = self.fc(x) # size(x) = (N, 4)
         return torch.softmax(x, dim=1)
 
