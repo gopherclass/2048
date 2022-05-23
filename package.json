@@ -285,7 +285,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "publish": "webpack build && gh-pages -d dist"
   },
   "repository": {
     "type": "git",
